@@ -16,7 +16,7 @@ jobs:
         env:
           MYSQL_DATABASE: shopkart
           MYSQL_USER: shopkart_user
-          MYSQL_PASSWORD: 123456789
+          MYSQL_PASSWORD: root
           MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
@@ -43,13 +43,13 @@ jobs:
         env:
           SHOPKART_DB_URL: jdbc:mysql://localhost:3306/shopkart
           SHOPKART_DB_USER: shopkart_user
-          SHOPKART_DB_PASSWORD: 123456789
+          SHOPKART_DB_PASSWORD: root
 
       - name: Run Tests
         env:
           SHOPKART_DB_URL: jdbc:mysql://localhost:3306/shopkart
           SHOPKART_DB_USER: shopkart_user
-          SHOPKART_DB_PASSWORD: 123456789
+          SHOPKART_DB_PASSWORD: root
           SELENIDE_HEADLESS: true
         run: ./gradlew clean test
 
