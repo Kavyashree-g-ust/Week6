@@ -57,7 +57,7 @@ dependencies {
 }
 
 allure {
-    version = "2.29.1"   // matches your BOM
+    version = "2.29.1"
     autoconfigure = true
     aspectjweaver = true
 }
