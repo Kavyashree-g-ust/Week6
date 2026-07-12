@@ -2,15 +2,29 @@ name: ShopKart CI
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: shopkart
+          MYSQL_USER: shopkart_user
+          MYSQL_PASSWORD: 123456789
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout Repository
@@ -26,14 +40,22 @@ jobs:
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Run Passing Tests
-        run: ./gradlew clean test -Dcucumber.filter.tags="not @api and not @e2e"
+      - name: Run Tests (All Scenarios)
+        env:
+          SHOPKART_DB_URL: jdbc:mysql://localhost:3306/shopkart
+          SHOPKART_DB_USER: shopkart_user
+          SHOPKART_DB_PASSWORD: 123456789
+        run: ./gradlew clean test
 
-      - name: Upload Test Report
+      - name: Generate Allure Report
+        run: ./gradlew allureReport
+
+      - name: Upload Reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: TestReport
+          name: Reports
           path: |
             build/reports/tests/test
             build/test-results/test
+            build/reports/allure-report

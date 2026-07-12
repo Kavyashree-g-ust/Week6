@@ -1,5 +1,6 @@
 package com.shopkart.stepdefs;
 
+import com.shopkart.api.OrderClient;
 import com.shopkart.support.WorldContext;
 import com.shopkart.ui.pages.CartPage;
 import com.shopkart.ui.pages.HomePage;
@@ -12,14 +13,35 @@ import io.cucumber.java.en.When;
 public final class CheckoutSteps {
     private final WorldContext world;
     private OrderPage confirmation;
-    public CheckoutSteps(WorldContext world) { this.world = world; }
+
+    public CheckoutSteps(WorldContext world) {
+        this.world = world;
+    }
+
     @Given("she adds {int} x {string} \\({int} paise each\\) through the UI")
     public void addThroughUi(int quantity, String sku, int unitPrice) {
-        String productName = switch (sku) { case "SKU-BAG" -> "Metro Carryall"; default -> throw new IllegalArgumentException("No UI product mapping for " + sku); };
-        for (int i = 0; i < quantity; i++) new HomePage().product(productName).addToCart();
+        String productName = switch (sku) {
+            case "SKU-BAG" -> "Metro Carryall";
+            default -> throw new IllegalArgumentException("No UI product mapping for " + sku);
+        };
+        for (int i = 0; i < quantity; i++) {
+            new HomePage().product(productName).addToCart();
+        }
     }
+
     @When("she checks out with a valid address")
-    public void checkout() { confirmation = new CartPage().checkout().placeOrder("42 Automation Lane, Bengaluru 560001"); world.orderId = Long.parseLong(confirmation.id()); }
+    public void checkout() {
+        // Place order via UI
+        confirmation = new CartPage().checkout()
+                .placeOrder("42 Automation Lane, Bengaluru 560001");
+
+        // Fetch the order details from backend using cartId
+        world.response = new OrderClient(world.alice.token()).get(world.cartId);
+        world.orderId = ((Number) world.response.path("id")).longValue();
+    }
+
     @Then("the order confirmation shows status {string}")
-    public void confirmationStatus(String status) { confirmation.statusIs(status); }
+    public void confirmationStatus(String status) {
+        confirmation.statusIs(status);
+    }
 }
