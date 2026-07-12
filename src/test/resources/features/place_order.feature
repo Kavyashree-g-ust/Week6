@@ -9,4 +9,5 @@ Feature: Place Order
     When she places the order
     Then the response status is 201
     And GET /api/orders/{that id} returns PLACED and totalPaise 99800
+    @db
     And the orders table has exactly one PLACED row for alice
