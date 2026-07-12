@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: write
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -20,6 +23,11 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - uses: actions/checkout@v4
@@ -30,35 +38,47 @@ jobs:
           java-version: 21
           cache: gradle
 
-      - name: Install Chrome
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
       - name: Grant execute permission
         run: chmod +x gradlew
 
-      - name: Start ShopKart backend
-        run: ./gradlew bootRun &
+      - name: Run DB‑only Tests
         env:
           SHOPKART_DB_URL: jdbc:mysql://localhost:3306/shopkart
-          SHOPKART_DB_USER: shopkart_user
-          SHOPKART_DB_PASSWORD: root
+          DB_HOST: localhost
+          DB_PORT: 3306
+          DB_NAME: shopkart
+          DB_USER: shopkart_user
+          DB_PASSWORD: root
+        run: ./gradlew clean test -Dcucumber.filter.tags="@db"
 
-      - name: Run Tests
-        env:
-          SHOPKART_DB_URL: jdbc:mysql://localhost:3306/shopkart
-          SHOPKART_DB_USER: shopkart_user
-          SHOPKART_DB_PASSWORD: root
-          SELENIDE_HEADLESS: true
-        run: ./gradlew clean test
+      - name: Checkout gh-pages branch
+        if: always()
+        continue-on-error: true
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
 
       - name: Generate Allure Report
-        run: ./gradlew allureReport
+        if: always()
+        uses: simple-elf/allure-report-action@master
+        with:
+          allure_results: build/allure-results
+          allure_report: allure-report
+          gh_pages: gh-pages
+          allure_history: allure-history
 
       - name: Upload Allure Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: build/reports/allure-report
+          path: allure-report
+
+      - name: Deploy Allure Report
+        if: always()
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: allure-history
+          token: ${{ secrets.GITHUB_TOKEN }}
