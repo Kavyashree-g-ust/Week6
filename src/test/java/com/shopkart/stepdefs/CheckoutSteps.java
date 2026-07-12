@@ -9,7 +9,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-/** UI-only journey actions; API/DB validation remains in the other thin glue classes. */
 public final class CheckoutSteps {
     private final WorldContext world;
     private OrderPage confirmation;
@@ -31,11 +30,11 @@ public final class CheckoutSteps {
 
     @When("she checks out with a valid address")
     public void checkout() {
-        // Place order via UI
+        //Place order via UI
         confirmation = new CartPage().checkout()
                 .placeOrder("42 Automation Lane, Bengaluru 560001");
 
-        // Fetch the order details from backend using cartId
+        //Fetch the order details from backend using cartId
         world.response = new OrderClient(world.alice.token()).get(world.cartId);
         world.orderId = ((Number) world.response.path("id")).longValue();
     }

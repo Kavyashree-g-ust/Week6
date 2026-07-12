@@ -24,10 +24,28 @@ public final class CartSteps {
     public void apiContains(String text) {
         world.response.then().statusCode(200); assertTrue(world.response.asString().contains(text));
     }
-    @Then("the home page shows {string}") public void homeShows(String name) { new HomePage().showsProduct(name); }
-    @Given("{string} has a cart with {int} x {string}") public void cartWithItem(String persona, int quantity, String sku) { world.cartId = CartBuilder.aCartFor(session(persona)).withItem(sku, quantity).build(); }
-    @When("she requests her cart") public void readCart() { world.response = new CartClient(world.alice.token()).get(world.cartId); }
-    @Then("its totalPaise is {int}") public void total(int total) { world.response.then().statusCode(200); assertEquals(total, ((Number) world.response.path("totalPaise")).intValue()); }
-    @When("she adds {int} x {string} to her cart") public void addToCart(int quantity, String sku) { world.response = new CartClient(world.alice.token()).add(world.cartId, sku, quantity); }
-    private com.shopkart.data.builders.CustomerBuilder.Session session(String persona) { return persona.equals("alice") ? world.alice : world.bob; }
+    @Then("the home page shows {string}")
+    public void homeShows(String name) {
+
+        new HomePage().showsProduct(name); }
+    @Given("{string} has a cart with {int} x {string}")
+    public void cartWithItem(String persona, int quantity, String sku) {
+        world.cartId = CartBuilder.aCartFor(session(persona)).withItem(sku, quantity).build();
+    }
+    @When("she requests her cart")
+    public void readCart() {
+        world.response = new CartClient(world.alice.token()).get(world.cartId);
+    }
+    @Then("its totalPaise is {int}")
+    public void total(int total) {
+        world.response.then().statusCode(200);
+        assertEquals(total, ((Number) world.response.path("totalPaise")).intValue());
+    }
+    @When("she adds {int} x {string} to her cart")
+    public void addToCart(int quantity, String sku) {
+        world.response = new CartClient(world.alice.token()).add(world.cartId, sku, quantity);
+    }
+    private com.shopkart.data.builders.CustomerBuilder.Session session(String persona) {
+        return persona.equals("alice") ? world.alice : world.bob;
+    }
 }

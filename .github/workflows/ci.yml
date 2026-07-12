@@ -3,7 +3,7 @@ name: ShopKart Allure Report
 on:
   push:
     branches:
-      - main   # or your branch name
+      - main
 
 permissions:
   contents: write

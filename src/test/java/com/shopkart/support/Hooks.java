@@ -7,4 +7,5 @@ public final class Hooks {
     @After("@ui or @e2e")
     public void closeBrowser() {
         closeWebDriver();
-    } }
+    }
+}

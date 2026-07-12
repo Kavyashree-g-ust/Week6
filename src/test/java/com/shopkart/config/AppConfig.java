@@ -18,6 +18,10 @@ public final class AppConfig {
     public static String baseUrl() {
         return Env.value("shopkart.base-url", PROPERTIES.getProperty("shopkart.base-url"));
     }
-    public static String apiUrl() { return Env.value("shopkart.api-url", PROPERTIES.getProperty("shopkart.api-url")); }
-    public static boolean headless() { return Boolean.parseBoolean(Env.value("shopkart.browser", PROPERTIES.getProperty("shopkart.browser"))); }
+    public static String apiUrl() {
+        return Env.value("shopkart.api-url", PROPERTIES.getProperty("shopkart.api-url"));
+    }
+    public static boolean headless() {
+        return Boolean.parseBoolean(Env.value("shopkart.browser", PROPERTIES.getProperty("shopkart.browser")));
+    }
 }

@@ -6,5 +6,7 @@ import io.cucumber.java.Before;
 
 public final class BaseApiTest {
     @Before(order = 1)
-    public void configureApi() { RestAssured.baseURI = AppConfig.apiUrl(); }
+    public void configureApi() {
+        RestAssured.baseURI = AppConfig.apiUrl();
+    }
 }
