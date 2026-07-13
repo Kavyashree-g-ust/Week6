@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-class FrameworkStandardTest {
+public class FrameworkStandardTest {
 
     @ParameterizedTest
     @ValueSource(classes = {

@@ -17,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Epic("Framework Hardening")
 @Feature("Reporting Insights")
 @Owner("SDET Trainee")
-class AllureReporting {
+
+public class AllureReporting {
 
     private static final Logger log =
             LoggerFactory.getLogger(AllureReporting.class);

@@ -63,9 +63,7 @@ allure {
 }
 
 tasks.test {
-    include("**/FrameworkStandardTest.class")
-    include("**/AllureReporting.class")
-    include("**/productClientStandardTest.class")
-
+    useJUnitPlatform()
     maxParallelForks = 1
 }
+

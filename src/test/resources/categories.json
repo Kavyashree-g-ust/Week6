@@ -1,5 +1,20 @@
 [
-  {"name":"Product defect","matchedStatuses":["failed"],"messageRegex":".*(AssertionError|expected).*"},
-  {"name":"Test defect","matchedStatuses":["broken"],"messageRegex":".*(locator|500|WebDriver).*"},
-  {"name":"Flaky","matchedStatuses":["passed"],"flaky":true}
+  {
+    "name": "Flaky tests",
+    "matchedStatuses": ["failed","broken","skipped"],
+    "messageRegex": ".*(timeout|stale element|connection reset).*",
+    "flaky": true
+  },
+  {
+    "name": "Test defects (broken)",
+    "matchedStatuses": ["broken"]
+  },
+  {
+    "name": "Product defects",
+    "matchedStatuses": ["failed"]
+  },
+  {
+    "name": "Test Skipped",
+    "matchedStatuses": ["skipped"]
+  }
 ]
