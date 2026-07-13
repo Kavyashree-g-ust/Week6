@@ -63,7 +63,12 @@ allure {
 }
 
 tasks.test {
-    useJUnitPlatform()
+    useJUnitPlatform()   // ensures JUnit 5 discovery
     maxParallelForks = 1
+    systemProperty("cucumber.plugin",
+        "pretty," +
+                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm")
+    systemProperty("allure.results.directory", "$buildDir/allure-results")
 }
+
 

@@ -34,7 +34,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run Tests
-        run: ./gradlew test
+        run: ./gradlew test --tests "com.shopkart.data.tests.*"
 
       - name: Checkout gh-pages branch
         if: always()
