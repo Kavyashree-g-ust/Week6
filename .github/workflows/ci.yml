@@ -1,102 +1,70 @@
-name: ShopKart Allure Report
+name: Test Environment
 
 on:
   push:
-    branches:
-      - main
+  pull_request:
 
 permissions:
   contents: write
 
 jobs:
-  allure-report:
+  build:
     runs-on: ubuntu-latest
 
-    services:
-      mysql:
-        image: mysql:8.4
-        env:
-          MYSQL_DATABASE: shopkart
-          MYSQL_USER: shopkart_user
-          MYSQL_PASSWORD: root
-          MYSQL_ROOT_PASSWORD: root
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+      - name: Checkout Code
+        uses: actions/checkout@v5
+
 
       - name: Set up Java
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: temurin
-          java-version: '21'
-          cache: gradle
+          java-version: '22'
 
-      - name: Setup Gradle
+
+
+      - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      - name: Run DB‑only tests
-        run: ./gradlew clean test -Dcucumber.filter.tags="@db" || true
-        env:
-          SHOPKART_DB_URL: jdbc:mysql://localhost:3306/shopkart
-          DB_HOST: localhost
-          DB_PORT: 3306
-          DB_NAME: shopkart
-          DB_USER: shopkart_user
-          DB_PASSWORD: root
+      - name: Generate Gradle Wrapper
+        run: gradle wrapper
 
-      - name: Copy Allure environment
-        if: always()
-        run: |
-          mkdir -p build/allure-results
-          echo "JAVA_VERSION=21" >> build/allure-results/environment.properties
-          echo "DB=MySQL 8.4" >> build/allure-results/environment.properties
+      - name: Grant execute permission
+        run: chmod +x gradlew
 
-      - name: Create gh-pages branch if it does not exist
-        if: always()
-        run: |
-          git fetch origin
-          if ! git ls-remote --exit-code --heads origin gh-pages; then
-            git checkout --orphan gh-pages
-            git rm -rf . || true
-            echo "# GitHub Pages" > README.md
-            git add README.md
-            git -c user.name="github-actions" \
-                -c user.email="github-actions@github.com" \
-                commit -m "Initialize gh-pages"
-            git push origin gh-pages
-          fi
-          git checkout ${{ github.ref_name }}
+      - name: Run Tests
+        run: ./gradlew test
 
-      - name: Checkout gh-pages
+      - name: Checkout gh-pages branch
         if: always()
-        uses: actions/checkout@v4
+        continue-on-error: true
+        uses: actions/checkout@v5
         with:
           ref: gh-pages
           path: gh-pages
 
-      - name: Generate Allure report
+      - name: Generate Allure Report
         if: always()
         uses: simple-elf/allure-report-action@master
         with:
-          gh_pages: gh-pages
-          allure_history: allure-history
           allure_results: build/allure-results
           allure_report: allure-report
+          gh_pages: gh-pages
+          allure_history: allure-history
 
-      - name: Publish report
+      - name: Upload Allure Report
         if: always()
-        uses: peaceiris/actions-gh-pages@v4
+        uses: actions/upload-artifact@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: gh-pages
-          publish_dir: allure-history
+          name: allure-report
+          path: allure-report
+
+      - name: Deploy Allure Report
+        if: always()
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: allure-history
+          token: ${{ secrets.GITHUB_TOKEN }}
+

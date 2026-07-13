@@ -1,4 +1,4 @@
-@db
+@api @db
 Feature: Cart totals
   Scenario: Cart total is the sum of quantity times price
     Given "alice" is logged in

@@ -63,9 +63,9 @@ allure {
 }
 
 tasks.test {
-    useJUnitPlatform()
-    systemProperty("cucumber.plugin",
-        "pretty," +
-                "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm")
-    systemProperty("allure.results.directory", "$buildDir/allure-results")
+    include("**/FrameworkStandardTest.class")
+    include("**/AllureReporting.class")
+    include("**/productClientStandardTest.class")
+
+    maxParallelForks = 1
 }
