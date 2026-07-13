@@ -1,0 +1,6 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","8","structureTest()","","2026-07-13","passed","2026-07-13","","com.shopkart.data.tests.ProductClientStandardTest","com.shopkart.data.tests.ProductClientStandardTest","structureTest"
+"","3","pageObjectsFollowStandards(Class) [3] class com.shopkart.ui.pages.CheckoutPage","","2026-07-13","passed","2026-07-13","","com.shopkart.data.tests.FrameworkStandardTest","com.shopkart.data.tests.FrameworkStandardTest","pageObjectsFollowStandards"
+"","31","pageObjectsFollowStandards(Class) [1] class com.shopkart.ui.pages.LoginPage","","2026-07-13","passed","2026-07-13","","com.shopkart.data.tests.FrameworkStandardTest","com.shopkart.data.tests.FrameworkStandardTest","pageObjectsFollowStandards"
+"Categories split flaky,test and product","47","categoriesPutGenericFlakyRules()","","2026-07-13","passed","2026-07-13","","com.shopkart.data.tests.AllureReporting","com.shopkart.data.tests.AllureReporting","categoriesPutGenericFlakyRules"
+"","4","pageObjectsFollowStandards(Class) [2] class com.shopkart.ui.pages.CartPage","","2026-07-13","passed","2026-07-13","","com.shopkart.data.tests.FrameworkStandardTest","com.shopkart.data.tests.FrameworkStandardTest","pageObjectsFollowStandards"
